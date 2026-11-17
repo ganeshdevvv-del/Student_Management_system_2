@@ -18,11 +18,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'] ?? '';
     $confirmPassword = $_POST['confirm_password'] ?? '';
 
-    if ($form['first_name'] === '' || $form['last_name'] === '' || $form['email'] === '' || $password === '') {
-        $error = 'Please fill in all required fields.';
+    if ($form['first_name'] === '' || $form['last_name'] === '' || $form['email'] === '' || $password === '')
+         {
+        $error = 'Please fill all required fields.';
     } 
      elseif ($password !== $confirmPassword) {
-        $error = 'Passwords do not match.';
+        $error = 'Passwords not match.';
     }
      else {
         // $hashPassword = password_hash($password, PASSWORD_DEFAULT);

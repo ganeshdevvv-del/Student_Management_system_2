@@ -2,11 +2,12 @@
 <?php
 require __DIR__ . '/../connection/db.php';
 
-$result = mysqli_query($conn, "
-    SELECT
-        (SELECT COUNT(*) FROM user WHERE role_id = 2) AS total_students,
-        (SELECT COUNT(*) FROM course) AS total_courses
-");
+#select query
+$sql = "SELECT
+        (SELECT COUNT(*) FROM user where role_id = 2) AS total_students,
+        (SELECT COUNT(*) FROM course) as total_courses" ;
+
+$result = mysqli_query($conn, $sql);
 
 $stats = mysqli_fetch_assoc($result);
 ?>

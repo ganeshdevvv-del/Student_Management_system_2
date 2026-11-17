@@ -121,7 +121,6 @@ $studentCount = mysqli_fetch_assoc($countResult)['total'];
                                         </td>
                                     </tr>
                                 <?php endif; ?>
-
                                 <?php while ($student = mysqli_fetch_assoc($result)): ?>
                       <tr>
                          <td><?= htmlspecialchars($student['reg_num'] ?? '') ?></td>
