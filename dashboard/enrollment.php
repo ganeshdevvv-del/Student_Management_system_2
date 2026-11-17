@@ -5,8 +5,7 @@ require __DIR__ . '/../connection/db.php';
 // get students..........
 $students = mysqli_query($conn, "SELECT * FROM user WHERE role_id = 2");
 
-// Get course....................
-$courses = mysqli_query($conn, "SELECT * FROM course");
+$courses = mysqli_query($conn, "SELECT * FROM course");// get course...............
 
 
 if (isset($_POST['save'])) {
@@ -49,6 +48,7 @@ while ($row = mysqli_fetch_assoc($result)) {
     $id = $row['id'];
 
     if (!isset($enrollments[$id])) {
+        
         $enrollments[$id] = [
             'reg_num' => $row['reg_num'],
             'name' => $row['first_name'] . ' ' . $row['last_name'],

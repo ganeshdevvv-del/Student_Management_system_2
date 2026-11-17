@@ -1,6 +1,5 @@
-
 <?php
-session_start();
+
 require __DIR__ . '/../connection/db.php';
 
 $error = '';
@@ -10,47 +9,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
 
-    $sql = "SELECT u.*, r.role_name FROM `user` u 
-            JOIN user_role r ON u.role_id = r.id 
-            WHERE u.email = ? LIMIT 1";
+    $sql = "SELECT `user`.*, user_role.role_name 
+            FROM `user`
+            JOIN user_role ON `user`.role_id = user_role.id
+            WHERE `user`.email = ?";
 
     $stmt = mysqli_prepare($conn, $sql);
-    if ($stmt) {
+    mysqli_stmt_bind_param($stmt, "s", $email);
+    mysqli_stmt_execute($stmt);
 
-        mysqli_stmt_bind_param($stmt, "s", $email);
-        mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    $user = mysqli_fetch_assoc($result);
 
-        $result = mysqli_stmt_get_result($stmt);
-        $user = mysqli_fetch_assoc($result);
+    if ($user && (password_verify($password, $user['password']) || $password === $user['password'])) {
         
-        if ($user &&(password_verify($password, $user['password']) || $password === $user['password']))
-         {
+        $role = strtolower($user['role_name']);
 
-            $role = strtolower($user['role_name']);
-            session_regenerate_id(true);
-            $_SESSION['user_id'] = (int)$user['id'];
-            $_SESSION['user_role'] = $role;
-
-            if ($role === 'admin') {
-                header("Location: ../dashboard/admin.php");
-                exit;
-            } 
-            elseif ($role === 'student') {
-                $_SESSION['student_id'] = (int)$user['id'];
-                header("Location: ../stddashboard.php");
-                exit;
-            } 
-            else {
-                $error = "Invalid user";
-            }
+        if ($role === 'admin') {
+            header("Location: ../dashboard/admin.php");
+            exit;
+        } 
+        elseif ($role === 'student') {
+            header("Location: ../stddashboard.php");
+            exit;
         } 
         else {
-            $error = "wrong email or password";
+            $error = "Invalid user";
         }
-        mysqli_stmt_close($stmt);
-    } else {
-        $error = "Database query failed";
+    } 
+    else {
+        $error = "Wrong email or password";
     }
+    mysqli_stmt_close($stmt);
 }
 ?>
 
@@ -65,12 +55,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 
 <body>
+
     <main class="container login-container">
         <h2>Welcome Back</h2>
-        <p><?= htmlspecialchars($error) ?></p>
-        <form method="POST">
 
+        <p><?= htmlspecialchars($error) ?></p>
+
+        <form method="POST">
             <div class="form-grid">
+
                 <div class="form-group">
                     <label>Email:</label>
                     <input type="email" name="email" required>
@@ -87,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             </div>
         </form>
-
     </main>
+
 </body>
 </html>

@@ -74,6 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <style>
         body { background: #f5f6f8; color: #252a34; }
     </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body class="py-5">
 <main class="container" style="max-width: 720px;">
