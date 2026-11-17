@@ -19,13 +19,28 @@ $stats = mysqli_fetch_assoc($result);
     <title>Student Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background: #f5f6f8; color: #252a34; }
-        .sidebar { min-height: 100vh; background: #fff; }
-        .sidebar a { color: #626875; text-decoration: none; }
-        .sidebar a.active, .sidebar a:hover { background: #fff1e6; color: #d58b53; }
-        .banner { background: linear-gradient(110deg, #d6a168, #5c9c7c); }
-        .stat-icon { width: 40px; height: 40px; }
-        /* @media (max-width: 767px) { .sidebar { min-height: auto; } } */
+        body { 
+            background:
+             #f5f6f8;
+              color: #252a34; 
+            }
+        .sidebar { min-height: 100vh; 
+        background: #fff;
+     }
+        .sidebar a { 
+            color: #626875;
+             text-decoration: none;
+             }
+        .sidebar a.active, .sidebar a:hover {
+             background:
+              #fff1e6; color:
+               #d58b53; 
+            }
+        .banner {
+             background: linear-gradient(110deg, #d6a168, #5c9c7c); 
+            }
+        .stat-icon { width: 40px; height: 40px; 
+    }
     </style>
 </head>
 <body>
@@ -38,7 +53,7 @@ $stats = mysqli_fetch_assoc($result);
                 <a class="rounded p-2" href="student.php">♙ Student profile</a>
                 <a href="course.php" class="rounded p-2" >▤ Courses</a>
                 <a class="rounded p-2" href="enrollment.php">☑ Enrollments</a>
-                <a class="rounded p-2" href="#">⚙ Settings</a>
+                <!-- <a class="rounded p-2" href="#">⚙ Settings</a> -->
             </nav>
         </aside>
 

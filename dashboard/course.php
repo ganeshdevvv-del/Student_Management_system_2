@@ -22,7 +22,7 @@ if (isset($_POST['add_course'])) {
         mysqli_stmt_bind_param($stmt, "sssd", $code, $name, $duration, $fees);
     }
     if ($stmt && mysqli_stmt_execute($stmt)) {
-        header("Location: course.php?saved=1");
+        header("Location: course.php?saved=1"); // send GET Responce
         exit;
     } 
     else {
@@ -31,7 +31,8 @@ if (isset($_POST['add_course'])) {
 }
 
 // DISPLAY COURSES
-$result = mysqli_query($conn, "SELECT * FROM course ORDER BY course_code");
+$sql = "";
+$result = mysqli_query($conn, "SELECT * FROM course ORDER BY id");
 $totalCourses = mysqli_num_rows($result);
 ?>
 <!DOCTYPE html>
@@ -96,7 +97,7 @@ $totalCourses = mysqli_num_rows($result);
                 <div class="alert alert-success">Course added successfully!</div>
             <?php endif; ?>
             <?php if (isset($_GET['updated'])): ?>
-                <div class="alert alert-success">Course updated successfully!</div>
+                <div class="alert alert-success">Course updated successfully!!</div>
             <?php endif; ?>
 
             <?php if (isset($_GET['deleted'])): ?>
@@ -111,7 +112,7 @@ $totalCourses = mysqli_num_rows($result);
             </div>
 
             <!-- Add Course -->
-            <div class="card border-0 shadow-sm rounded-4 mb-4">
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
                 <div class="card-body">
                     <h5 class="mb-3">Add New Course</h5>
                     <form method="POST">
@@ -127,8 +128,8 @@ $totalCourses = mysqli_num_rows($result);
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">Course Fees</label>
-                                <input type="number" name="course_fees" class="form-control" min="0" step="0.01" required>
+                                <label class="form-label">Course Fess</label>
+                                <input type="number" name="course_fees" class="form-control" required>
                             </div>
 
                             <div class="col-md-3">
@@ -141,7 +142,6 @@ $totalCourses = mysqli_num_rows($result);
                                 <input type="text" name="course_end" class="form-control" placeholder="Dec" required>
                             </div>
                         </div>
-
 
                         <button type="submit" name="add_course" class="btn btn-primary btn-sm mt-3">
                             + Add Course
@@ -167,21 +167,21 @@ $totalCourses = mysqli_num_rows($result);
                             </thead>
 
                             <tbody>
-                                <?php while ($course = mysqli_fetch_assoc($result))
-                                    { ?>
-                                    <tr>
-                                        <td><?= htmlspecialchars($course['course_code']) ?></td>
-                                        <td><?= htmlspecialchars($course['course_name']) ?></td>
-                                        <td><?= htmlspecialchars($course['fees']) ?></td>
-                                        <td><?= htmlspecialchars($course['duration']) ?></td>
-                                        <td>
-                                            <a href="edit.php?type=course&amp;id=<?= urlencode($course['course_code']) ?>"
-                                                class="btn btn-sm btn-primary">
-                                                Manage
-                                            </a>
+                        <?php while ($course = mysqli_fetch_assoc($result))
+                             { ?>
+                            <tr>
+                                  <td><?= htmlspecialchars($course['course_code']) ?></td>
+                                  <td><?= htmlspecialchars($course['course_name']) ?></td>
+                                  <td><?= htmlspecialchars($course['fees']) ?></td>
+                                 <td><?= htmlspecialchars($course['duration']) ?></td>
+                                 <td>
+                                     <a href="edit.php?type=course&amp;id=<?= urlencode($course['course_code']) ?>"
+                                       class="btn btn-sm btn-primary">
+                                            Manage
+                                    </a>
                                         </td>
-                                    </tr>
-                                <?php } ?>
+                            </tr>
+                        <?php } ?>
 
                             </tbody>
                         </table>

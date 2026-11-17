@@ -1,5 +1,6 @@
 
 <?php
+session_start();
 require __DIR__ . '/../connection/db.php';
 
 $error = '';
@@ -26,13 +27,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
          {
 
             $role = strtolower($user['role_name']);
+            session_regenerate_id(true);
+            $_SESSION['user_id'] = (int)$user['id'];
+            $_SESSION['user_role'] = $role;
 
             if ($role === 'admin') {
                 header("Location: ../dashboard/admin.php");
                 exit;
             } 
             elseif ($role === 'student') {
-                header("Location: ../dashboard/student.php");
+                $_SESSION['student_id'] = (int)$user['id'];
+                header("Location: ../stddashboard.php");
                 exit;
             } 
             else {

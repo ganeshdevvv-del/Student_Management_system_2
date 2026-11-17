@@ -1,6 +1,4 @@
 
-
-
 welcome to landing page..........
 <!DOCTYPE html>
 <html lang="en">
@@ -16,20 +14,22 @@ welcome to landing page..........
      <nav class="navbar navbar-expand-lg bg-white  text-info shadow-sm sticky-top">
         <div class="container">
             <a class="navbar-brand" href="index.html">
+                
+                 
                 A->Z Scholl <span>Nova</span>
-            
             </a>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu"
                 aria-controls="navbarMenu" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon indexes-icon margin"></span>
+                <aside></aside>
             </button>
 
-            <div class="calapse contioner-fluide nav-item content-page  px-4 m-4 ">
+            <div class="calapse content-page  px-4 m-4 d-flex align-item-center justified-content center  ">
         
                 <ul class="continer-fluides m-3 d-flex justify-content-center align-item-center ">
                     <li class="context-page text-primary rombus the function "> </li>
-                    <li class="navbar-toggler" type="button" data-bs-toggle >
+                    <li class="nav-item continer-flluide fixed action">
 
                     </li>
                 </ul> 
@@ -40,28 +40,29 @@ welcome to landing page..........
             
 
                 <ul class="navbar-nav mx-auto mb-2 mb-lg-0 text-primary ">
-
             
                     <li class="nav-item" rounded-cornor d-flex cotent py-5 required>
+                    
                         <a class="nav-link px-3 text-primary" href="index.php">Home</a>
                     </li>
                     <li class="nav-item">
                         <li class="nav-item">
-                            <a href="#settings" class="nav-link px-3 py-2 d-flex"></a>
+                            <a href="#settings" id="setting_id" class="nav-link px-3 py-2 d-flex"></a>
+
                         </li>
-                        <a class="nav-link px-3" href="#services">Services</a>
+                        <a class="nav-link px-3" id="servise_id" href="#services">Services</a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link px-3" href="#about.html">About</a>
+                        <a class="nav-link px-3" id ="about_id" href="#about.html">About</a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link px-3" href="#projects">placemement</a>
+                        <a class="nav-link px-3" id="project_id" href="#projects">placemement</a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link px-3 active" href="#contact.html">
+                        <a class="nav-link px-3 active" id="account_id" href="#contact.html">
                             Contact
                         </a>
                     </li>

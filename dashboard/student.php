@@ -11,7 +11,9 @@ mysqli_stmt_bind_param($stmt, "ss", $searchValue, $searchValue);
 mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
 
-$countResult = mysqli_query($conn, "SELECT COUNT(*) AS total FROM user WHERE role_id = 2");
+$sql = "SELECT COUNT(*) AS total FROM user WHERE role_id = 2";
+
+$countResult = mysqli_query($conn, $sql);
 $studentCount = mysqli_fetch_assoc($countResult)['total'];
 ?>
 <!DOCTYPE html>

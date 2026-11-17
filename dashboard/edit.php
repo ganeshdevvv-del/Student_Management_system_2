@@ -3,6 +3,8 @@ require __DIR__ . '/../connection/db.php';
 
 $type = $_GET['type'] ?? 'student';
 $message = '';
+$student = '';
+$course = "";
 $messageType = 'danger';
 
 // for course...........................
@@ -25,16 +27,19 @@ if ($type === 'course') {
                 exit;
             }
             $message = 'Course could not be deleted.';
-        } elseif (isset($_POST['save'])) {
+        }
+        
+        elseif (isset($_POST['save'])) {
             $newCode = trim($_POST['course_code'] ?? '');
             $name = trim($_POST['course_name'] ?? '');
             $duration = trim($_POST['duration'] ?? '');
             $fees = filter_var($_POST['fees'] ?? '', FILTER_VALIDATE_FLOAT);
 
             if ($newCode === '' || $name === '' || $duration === '' || $fees === false || $fees < 0) {
-                $message = 'Enter a course code, name, duration, and a valid non-negative fee.';
+                $message = 'Enter the required fields & fees not in negative';
             } else {
-                $sql = 'UPDATE course SET course_code = ?, course_name = ?, duration = ?, fees = ? WHERE course_code = ?';
+                $sql = 'UPDATE course SET course_code = ?, course_name = ?, duration = ?, fees = ? 
+                WHERE course_code = ?';
                 $update = mysqli_prepare($conn, $sql);
                 if ($update) {
                     mysqli_stmt_bind_param($update, 'sssds', $newCode, $name, $duration, $fees, $courseCode);
@@ -43,7 +48,7 @@ if ($type === 'course') {
                     header('Location: course.php?updated=1');
                     exit;
                 }
-                $message = 'Course could not be updated. Check that the course code is unique.';
+                $message = 'Course not be update';
             }
         }
     }
@@ -76,7 +81,9 @@ if ($type === 'course') {
                 exit;
             }
             $message = 'Student could not be deleted.';
-        } elseif (isset($_POST['save'])) {
+        }
+        
+        elseif (isset($_POST['save'])) {
             $firstName = trim($_POST['first_name'] ?? '');
             $lastName = trim($_POST['last_name'] ?? '');
             $email = trim($_POST['email'] ?? '');
@@ -88,10 +95,15 @@ if ($type === 'course') {
             if ($firstName === '' || $lastName === '' || $email === '') {
                 $message = 'First name, last name, and email are required.';
             } 
+
+
             elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 $message = 'Please enter a valid email address.';
-            } else {
-                $sql = 'UPDATE user SET first_name = ?, last_name = ?, email = ?, phone = ?, gender = ?, dob = ?, address = ? WHERE id = ? AND role_id = 2';
+            } 
+            
+            else {
+                $sql = 'UPDATE user SET first_name = ?, last_name = ?, email = ?, phone = ?, gender = ?, dob = ?, address = ? 
+                WHERE id = ? AND role_id = 2';
                 $update = mysqli_prepare($conn, $sql);
                 mysqli_stmt_bind_param($update, 'sssssssi', $firstName, $lastName, $email, $phone, $gender, $dob, $address, $studentId);
                 if (mysqli_stmt_execute($update) && mysqli_stmt_affected_rows($update) >= 0) {
@@ -114,7 +126,7 @@ if ($type === 'course') {
 }
 //------------------------------------------------------------------------------------------------------------------
 function fieldValue($record, $key) {
-    return htmlspecialchars($record[$key] ?? '', ENT_QUOTES, 'UTF-8');
+    return htmlspecialchars($record[$key] ?? '', ENT_QUOTES );
 }
 ?>
 <!DOCTYPE html>
@@ -197,7 +209,7 @@ function fieldValue($record, $key) {
                     <textarea id="address" name="address" class="form-control" rows="3"><?= fieldValue($student, 'address') ?></textarea>
                 </div>
             </div>
-            <div class="d-flex justify-content-between mt-4">
+            <div class="d-flex justify-content-between mt-4"> 
                 <button type="submit" name="save" class="btn btn-primary">Save changes</button>
                 <button type="submit" name="delete" class="btn btn-outline-danger">Delete student</button>
             </div>
