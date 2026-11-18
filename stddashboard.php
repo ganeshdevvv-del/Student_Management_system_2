@@ -1,8 +1,7 @@
 
-each student dashboard....................
+seperate  student dashboard....................
 <?php
 require __DIR__ . '/../connection/db.php';
-
 
 
 ?>
@@ -14,6 +13,7 @@ require __DIR__ . '/../connection/db.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Student Dashboard</title>
+
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
@@ -135,6 +135,7 @@ require __DIR__ . '/../connection/db.php';
                 <section>
 
                     //display enrollement details
+                    
                 </section>
 
             </main>
