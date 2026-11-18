@@ -1,71 +1,10 @@
 <?php
-require __DIR__ . '/../connection/db.php';
-
-$type = $_GET['type'] ?? 'student';
+require __DIR__ . '/../../connection/db.php';
 $message = '';
-$student = '';
-$course = "";
 $messageType = 'danger';
-
-// for course...........................
-if ($type === 'course') {
-    $courseCode = $_GET['id'] ;
-    if ($courseCode === '') {
-        header('Location: course.php?error=1');
-        exit;
-    }
-
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        if (isset($_POST['delete'])) {
-            $sql = 'DELETE FROM course WHERE course_code = ?';
-            $delete = mysqli_prepare($conn, $sql);
-            if ($delete) {
-                mysqli_stmt_bind_param($delete, 's', $courseCode);
-            }
-            if ($delete && mysqli_stmt_execute($delete) && mysqli_stmt_affected_rows($delete) === 1) {
-                header('Location: course.php?deleted=1');
-                exit;
-            }
-            $message = 'Course could not be deleted.';
-        }
-        
-        elseif (isset($_POST['save'])) {
-            $newCode = trim($_POST['course_code'] ?? '');
-            $name = trim($_POST['course_name'] ?? '');
-            $duration = trim($_POST['duration'] ?? '');
-            $fees = filter_var($_POST['fees'] ?? '', FILTER_VALIDATE_FLOAT);
-
-            if ($newCode === '' || $name === '' || $duration === '' || $fees === false || $fees < 0) {
-                $message = 'Enter the required fields & fees not in negative';
-            } else {
-                $sql = 'UPDATE course SET course_code = ?, course_name = ?, duration = ?, fees = ? 
-                WHERE course_code = ?';
-                $update = mysqli_prepare($conn, $sql);
-                if ($update) {
-                    mysqli_stmt_bind_param($update, 'sssds', $newCode, $name, $duration, $fees, $courseCode);
-                }
-                if ($update && mysqli_stmt_execute($update)) {
-                    header('Location: course.php?updated=1');
-                    exit;
-                }
-                $message = 'Course not be update';
-            }
-        }
-    }
-    $sql = 'SELECT course_code, course_name, duration, fees FROM course WHERE course_code = ? LIMIT 1';
-    $stmt = mysqli_prepare($conn, $sql );
-    mysqli_stmt_bind_param($stmt, 's', $courseCode);
-    mysqli_stmt_execute($stmt);
-    $course = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
-    if (!$course) {
-        header('Location: course.php?error=1');
-        exit;
-    }
-} else 
-{
     $studentId = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
     if (!$studentId) {
-        header('Location: student.php?error=1');
+        header('Location: ../student.php?error=1');
         exit;
     }
 
@@ -77,7 +16,7 @@ if ($type === 'course') {
             $delete = mysqli_prepare($conn,$sql );
             mysqli_stmt_bind_param($delete, 'i', $studentId);
             if (mysqli_stmt_execute($delete) && mysqli_stmt_affected_rows($delete) === 1) {
-                header('Location: student.php?deleted=1');
+                header('Location: ../student.php?deleted=1');
                 exit;
             }
             $message = 'Student could not be deleted.';
@@ -126,7 +65,7 @@ if ($type === 'course') {
                     }
 
                     mysqli_commit($conn);
-                    header('Location: student.php?updated=1');
+                    header('Location: ../student.php?updated=1');
                     exit;
                 } catch (Throwable $exception) {
                     mysqli_rollback($conn);
@@ -141,9 +80,11 @@ if ($type === 'course') {
     mysqli_stmt_execute($stmt);
     $student = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
     if (!$student) {
-        header('Location: student.php?error=1');
+        header('Location: ../student.php?error=1');
         exit;
     }
+
+    $courses = "";
 
     $courses = mysqli_query($conn, 'SELECT id, course_code, course_name, fees FROM course ORDER BY course_name');
     if (!isset($selectedCourseIds)) {
@@ -156,10 +97,8 @@ if ($type === 'course') {
             $selectedCourseIds[] = (int)$enrollment['course_id'];
         }
     }
-}
-//------------------------------------------------------------------------------------------------------------------
 function fieldValue($record, $key) {
-    return htmlspecialchars($record[$key] ?? '', ENT_QUOTES );
+    return htmlspecialchars($record[$key] ?? '', ENT_QUOTES);
 }
 ?>
 <!DOCTYPE html>
@@ -167,50 +106,24 @@ function fieldValue($record, $key) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= $type === 'course' ? 'Manage Course' : 'Manage Student' ?></title>
+    <title>Manage Student</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="bg-light">
 <main class="container py-5" style="max-width: 760px">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <p class="text-secondary mb-1"><?= $type === 'course' ? 'Course Directory' : 'Student Directory' ?></p>
-            <h2 class="mb-0"><?= $type === 'course' ? 'Manage Course' : 'Manage Student' ?></h2>
+            <p class="text-secondary mb-1">Student Directory</p>
+            <h2 class="mb-0">Manage Student</h2>
         </div>
-        <a href="<?= $type === 'course' ? 'course.php' : 'student.php' ?>" class="btn btn-outline-secondary">Back to <?= $type === 'course' ? 'courses' : 'students' ?></a>
+        <a href="../student.php" class="btn btn-outline-secondary">Back to students</a>
     </div>
 
     <?php if ($message !== ''): ?>
         <div class="alert alert-<?= $messageType ?>"><?= htmlspecialchars($message, ENT_QUOTES, 'UTF-8') ?></div>
     <?php endif; ?>
 
-    <?php if ($type === 'course'): ?>
-        <form method="POST" class="card border-0 shadow-sm p-4">
-            <div class="row g-3">
-                <div class="col-md-6">
-                    <label for="course_code" class="form-label">Course code *</label>
-                    <input id="course_code" name="course_code" class="form-control" value="<?= fieldValue($course, 'course_code') ?>">
-                </div>
-                <div class="col-md-6">
-                    <label for="course_name" class="form-label">Course name *</label>
-                    <input id="course_name" name="course_name" class="form-control" value="<?= fieldValue($course, 'course_name') ?>">
-                </div>
-                <div class="col-md-6">
-                    <label for="duration" class="form-label">Duration *</label>
-                    <input id="duration" name="duration" class="form-control" value="<?= fieldValue($course, 'duration') ?>">
-                </div>
-                <div class="col-md-6">
-                    <label for="fees" class="form-label">Fees *</label>
-                    <input id="fees" name="fees" type="number" min="0" step="0.01" class="form-control" value="<?= fieldValue($course, 'fees') ?>">
-                </div>
-            </div>
-            <div class="d-flex justify-content-between mt-4">
-                <button type="submit" name="save" class="btn btn-primary">Save changes</button>
-                <button type="submit" name="delete" class="btn btn-outline-danger">Delete course</button>
-            </div>
-        </form>
-    <!-- --------------------------------------------------------------------------------------------------------------------------------------------------------------------- -->
-    <?php else: ?>
+    
         <form method="POST" class="card border-0 shadow-sm p-4">
             <div class="row g-3">
                 <div class="col-md-6">
@@ -242,7 +155,8 @@ function fieldValue($record, $key) {
                     <textarea id="address" name="address" class="form-control" rows="3"><?= fieldValue($student, 'address') ?></textarea>
                 </div>
                 <div class="col-12">
-                    <label class="form-label">Course Selection</label>
+                    <label class="form-label">Courses</label>
+
                     <?php if (mysqli_num_rows($courses) === 0): ?>
                         <p class="text-secondary">No courses are available.</p>
                     <?php else: ?>
@@ -255,6 +169,7 @@ function fieldValue($record, $key) {
                                     <?= htmlspecialchars($courseOption['course_name'] . ' (' . $courseOption['course_code'] . ')', ENT_QUOTES, 'UTF-8') ?>
                                 </label>
                             </div>
+                            
                         <?php endwhile; ?>
                     <?php endif; ?>
                 </div>
@@ -264,7 +179,6 @@ function fieldValue($record, $key) {
                 <button type="submit" name="delete" class="btn btn-outline-danger">Delete student</button>
             </div>
         </form>
-    <?php endif; ?>
 </main>
 </body>
 </html>

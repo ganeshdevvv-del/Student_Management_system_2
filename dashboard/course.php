@@ -175,7 +175,7 @@ $totalCourses = mysqli_num_rows($result);
                                   <td><?= htmlspecialchars($course['fees']) ?></td>
                                  <td><?= htmlspecialchars($course['duration']) ?></td>
                                  <td>
-                                     <a href="edit.php?type=course&amp;id=<?= urlencode($course['course_code']) ?>"
+                                     <a href="edit/courseedit.php?id=<?= urlencode($course['course_code']) ?>"
                                        class="btn btn-sm btn-primary">
                                             Manage
                                     </a>

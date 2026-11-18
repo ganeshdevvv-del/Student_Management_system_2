@@ -134,7 +134,7 @@ $studentCount = mysqli_fetch_assoc($countResult)['total'];
                       <td>
                                             <div class="d-flex gap-2">
                                                 <a class="btn btn-sm btn-primary"
-                                                    href="edit.php?type=student&amp;id= <?= (int)$student['id'] ?>">
+                                                    href="edit/stdedit.php?id=<?= (int)$student['id'] ?>">
                                                     Manage
                                                 </a>
                                             </div>
