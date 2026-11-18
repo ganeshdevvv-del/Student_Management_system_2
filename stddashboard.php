@@ -2,7 +2,9 @@
 
 <?php
 
-session_start();
+require __DIR__ . '/auth/check_login.php';
+needLogin('student');
+
 require __DIR__ . '/connection/db.php';
 
 $studentId = $_SESSION['student_id'];
@@ -10,7 +12,7 @@ $studentId = $_SESSION['student_id'];
 $sql = "SELECT * FROM user WHERE id = ?";
 $stmt = mysqli_prepare($conn, $sql);
 
-$id = 8;
+// $id = 8;
 mysqli_stmt_bind_param($stmt, "i", $studentId);
 mysqli_stmt_execute($stmt);
 

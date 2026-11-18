@@ -1,4 +1,6 @@
 <?php
+require __DIR__ . '/../../auth/check_login.php';
+needLogin('admin');
 require __DIR__ . '/../../connection/db.php';
 $message = '';
 $messageType = 'danger';
@@ -160,8 +162,9 @@ function fieldValue($record, $key) {
                     <?php if (mysqli_num_rows($courses) === 0): ?>
                         <p class="text-secondary">No courses are available.</p>
                     <?php else: ?>
+                        <div id="course-list">
                         <?php while ($courseOption = mysqli_fetch_assoc($courses)): ?>
-                            <div class="form-check">
+                            <div class="form-check course-option">
                                 <input class="form-check-input" type="checkbox" name="course_ids[]"
                                     id="course_<?= (int)$courseOption['id'] ?>" value="<?= (int)$courseOption['id'] ?>"
                                     <?= in_array((int)$courseOption['id'], $selectedCourseIds, true) ? 'checked' : '' ?>>
@@ -171,6 +174,12 @@ function fieldValue($record, $key) {
                             </div>
                             
                         <?php endwhile; ?>
+                        </div>
+                        <div class="d-flex align-items-center gap-2 mt-3" id="course-pagination">
+                            <button type="button" class="btn btn-sm btn-outline-secondary" id="course-prev">Previous</button>
+                            <span id="course-page" class="small text-secondary"></span>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" id="course-next">Next</button>
+                        </div>
                     <?php endif; ?>
                 </div>
             </div>
@@ -180,5 +189,34 @@ function fieldValue($record, $key) {
             </div>
         </form>
 </main>
+<script>
+    const courses = document.querySelectorAll('.course-option');
+    let page = 0;
+    const limit = 10;
+
+    function showPage() {
+        let totalPages = Math.ceil(courses.length / limit);
+
+        courses.forEach((course, index) => {
+            course.hidden = index < page * limit || index >= (page + 1) * limit;
+        });
+
+        document.getElementById('course-page').textContent = `Page ${page + 1} of ${totalPages}`;
+        document.getElementById('course-prev').disabled = page === 0;
+        document.getElementById('course-next').disabled = page === totalPages - 1;
+    }
+
+    document.getElementById('course-prev').onclick = () => {
+        page--;
+        showPage();
+    };
+
+    document.getElementById('course-next').onclick = () => {
+        page++;
+        showPage();
+    };
+
+    showPage();
+</script>
 </body>
 </html>

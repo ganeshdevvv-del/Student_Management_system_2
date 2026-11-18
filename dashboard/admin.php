@@ -1,5 +1,8 @@
 
 <?php
+require __DIR__ . '/../auth/check_login.php';
+needLogin('admin');
+
 require __DIR__ . '/../connection/db.php';
 
 #select query
@@ -50,7 +53,7 @@ $stats = mysqli_fetch_assoc($result);
         <aside class="col-md-2 sidebar p-3">
             <h4 class="mb-4">🎓 Student</h4>
             <nav class="nav flex-column gap-2">
-                <a class="active rounded p-2" href="admin.php">▦  Admin Dashboard</a>
+                <a class="active rounded p-2" href="admin.php"> Admin Dashboard</a>
                 <a class="rounded p-2" href="student.php">♙ Student profile</a>
                 <a href="course.php" class="rounded p-2" >▤ Courses</a>
                 <a class="rounded p-2" href="enrollment.php">☑ Enrollments</a>

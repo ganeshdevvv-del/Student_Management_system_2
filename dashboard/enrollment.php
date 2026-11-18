@@ -1,5 +1,8 @@
 
 <?php
+require __DIR__ . '/../auth/check_login.php';
+needLogin('admin');
+
 require __DIR__ . '/../connection/db.php';
 
 // Get students and courses
@@ -98,10 +101,11 @@ while ($row = mysqli_fetch_assoc($result)) {
         <aside class="col-md-2 sidebar p-3">
             <h4 class="mb-4">🎓 Student</h4>
             <nav class="nav flex-column gap-2">
-                <a href="admin.php" class="p-2 rounded">Admin Zone</a>
-                <a href="student.php" class="p-2 rounded">Student Profile</a>
-                <a href="course.php" class="p-2 rounded">Courses</a>
-                <a href="enrollment.php" class="p-2 rounded active">Enroll Student</a>
+                <a class=" rounded p-2" href="admin.php">▦  Admin Dashboard</a>
+                <a class="rounded p-2" href="student.php">♙ Student profile</a>
+                <a href="course.php" class="rounded p-2" >▤ Courses </a>
+                <a class="rounded p-2 active" href="enrollment.php">Enroll-Students</a>
+                <!-- <a class="rounded p-2" href="#">⚙ Settings</a> -->
             </nav>
         </aside>
 

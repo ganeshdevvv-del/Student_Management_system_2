@@ -1,4 +1,6 @@
 <?php
+require __DIR__ . '/check_login.php';
+needLogin('admin');
 require __DIR__ . '/../connection/db.php';
 
 $error = '';
@@ -31,10 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit;
             }
 
-            $error = mysqli_stmt_errno($stmt) === 1062
-                ? 'That email address is already registered.'
-                : 'Could not add the admin. Please try again.';
-            mysqli_stmt_close($stmt);
+            
         } else {
             $error = 'Please try again.';
         }

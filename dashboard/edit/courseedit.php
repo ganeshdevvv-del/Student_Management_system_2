@@ -1,4 +1,7 @@
 <?php
+require __DIR__ . '/../../auth/check_login.php';
+needLogin('admin');
+
 require __DIR__ . '/../../connection/db.php';
 $message = '';
 $messageType = 'danger';

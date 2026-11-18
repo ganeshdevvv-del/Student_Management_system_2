@@ -1,6 +1,9 @@
 
 <?php
 
+require __DIR__ . '/../auth/check_login.php';
+needLogin('admin');
+
 require __DIR__ . '/../connection/db.php';
 
 $error = "";
@@ -74,10 +77,11 @@ $totalCourses = mysqli_num_rows($result);
             <h4 class="mb-4">🎓 Student</h4>
 
             <nav class="nav flex-column gap-2">
-                <a href="admin.php" class="p-2 rounded">Admin Zone</a>
-                <a href="student.php" class="p-2 rounded">Student Profile</a>
-                <a href="course.php" class="p-2 rounded active">Course Directory</a>
-                <a href="enrollment.php" class="p-2 rounded">Enrollments</a>
+                <a class=" rounded p-2" href="admin.php">▦  Admin Dashboard</a>
+                <a class="rounded p-2" href="student.php">♙ Student profile</a>
+                <a href="course.php" class="rounded p-2 active" >Courses Directory</a>
+                <a class="rounded p-2" href="enrollment.php">☑ Enrollments</a>
+                <!-- <a class="rounded p-2" href="#">⚙ Settings</a> -->
             </nav>
         </aside>
 

@@ -1,13 +1,30 @@
 
 <?php
+require __DIR__ . '/../auth/check_login.php';
+needLogin('admin');
+
 require __DIR__ . '/../connection/db.php';
 
 $search = $_GET['search'] ?? '';
-
-$sql = "SELECT * FROM user WHERE role_id = 2 AND (first_name LIKE ? OR last_name LIKE ?) ORDER BY reg_num ASC";
-$stmt = mysqli_prepare($conn, $sql);
+$perPage = 10;
+$page = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT, [
+    'options' => ['default' => 1, 'min_range' => 1],
+]);
 $searchValue = "%$search%";
-mysqli_stmt_bind_param($stmt, "ss", $searchValue, $searchValue);
+//paggination for display table
+$countSql = "SELECT COUNT(*) AS total FROM user WHERE role_id = 2 AND (first_name LIKE ? OR last_name LIKE ?)";
+$countStmt = mysqli_prepare($conn, $countSql);
+mysqli_stmt_bind_param($countStmt, "ss", $searchValue, $searchValue);
+mysqli_stmt_execute($countStmt);
+$filteredStudentCount = (int) mysqli_fetch_assoc(mysqli_stmt_get_result($countStmt))['total'];
+$totalPages = max(1, (int) ceil($filteredStudentCount / $perPage));
+$page = min($page, $totalPages);
+$offset = ($page - 1) * $perPage;
+
+// search the student
+$sql = "SELECT * FROM user WHERE role_id = 2 AND (first_name LIKE ? OR last_name LIKE ?) ORDER BY reg_num ASC LIMIT ? OFFSET ?";
+$stmt = mysqli_prepare($conn, $sql);
+mysqli_stmt_bind_param($stmt, "ssii", $searchValue, $searchValue, $perPage, $offset);
 mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
 
@@ -43,10 +60,11 @@ $studentCount = mysqli_fetch_assoc($countResult)['total'];
         <aside class="col-md-2 sidebar p-3">
             <h4 class="mb-4">🎓 Student</h4>
             <nav class="nav flex-column gap-2">
-                <a href="admin.php" class="p-2 rounded">Admin Zone</a>
-                <a href="student.php" class="p-2 rounded active">Student Directory</a>
-                <a href="course.php" class="p-2 rounded">Courses</a>
-                <a href="enrollment.php" class="p-2 rounded">Enrollments</a>
+                <a class=" rounded p-2" href="admin.php">▦  Admin Dashboard</a>
+                <a class="rounded p-2 active" href="student.php">Student Details</a>
+                <a href="course.php" class="rounded p-2 " >▤ Courses </a>
+                <a class="rounded p-2" href="enrollment.php">☑ Enrollments</a>
+                <!-- <a class="rounded p-2" href="#">⚙ Settings</a> -->
             </nav>
         </aside>
 
@@ -145,7 +163,26 @@ $studentCount = mysqli_fetch_assoc($countResult)['total'];
                         </table>
                     </div>
 
+                    <?php if ($totalPages > 1): ?>
+    <nav>
+        <ul class="pagination justify-content-center">
+            <li class="page-item <?= $page == 1 ? 'disabled' : '' ?>">
+                <a class="page-link" href="?search=<?= $search ?>&page=<?= $page - 1 ?>">Previous</a>
+            </li>
+            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                <li class="page-item <?= $page == $i ? 'active' : '' ?>">
+                    <a class="page-link" href="?search=<?= $search ?>&page=<?= $i ?>">
+                        <?= $i ?>
+                    </a>
+                </li>
+            <?php endfor; ?>    
+            <li class="page-item <?= $page == $totalPages ? 'disabled' : '' ?>">
+                <a class="page-link" href="?search=<?= $search ?>&page=<?= $page + 1 ?>">Next</a>
+            </li>
 
+        </ul>
+    </nav>
+<?php endif; ?>
 
                 </div>
             </div>
