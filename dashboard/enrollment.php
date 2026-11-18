@@ -106,6 +106,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                 <a href="course.php" class="rounded p-2" >▤ Courses </a>
                 <a class="rounded p-2 active" href="enrollment.php">Enroll-Students</a>
                 <!-- <a class="rounded p-2" href="#">⚙ Settings</a> -->
+                <a class="rounded p-2 mt-auto text-danger" href="/auth/logout.php">⏻ Logout</a>
             </nav>
         </aside>
 

@@ -105,6 +105,7 @@ $enrollmentResult = mysqli_stmt_get_result($stmt);
                 <h4 class="mb-4">Student Portal</h4>
                 <nav class="nav flex-column gap-2">
                     <a class="rounded p-2 active" href="#profile">My Profile</a>
+                    <a class="rounded p-2 mt-auto text-danger" href="/auth/logout.php">⏻ Logout</a>
                 </nav>
             </aside>
             <main class="col-md-9 col-lg-10 p-3 p-lg-4">

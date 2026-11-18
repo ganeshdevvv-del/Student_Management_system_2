@@ -82,6 +82,7 @@ $totalCourses = mysqli_num_rows($result);
                 <a href="course.php" class="rounded p-2 active" >Courses Directory</a>
                 <a class="rounded p-2" href="enrollment.php">☑ Enrollments</a>
                 <!-- <a class="rounded p-2" href="#">⚙ Settings</a> -->
+                <a class="rounded p-2 mt-auto text-danger" href="/auth/logout.php">⏻ Logout</a>
             </nav>
         </aside>
 
