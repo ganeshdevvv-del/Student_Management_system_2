@@ -16,6 +16,7 @@ $sql = "SELECT COUNT(*) AS total FROM user WHERE role_id = 2";
 $countResult = mysqli_query($conn, $sql);
 $studentCount = mysqli_fetch_assoc($countResult)['total'];
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -143,6 +144,9 @@ $studentCount = mysqli_fetch_assoc($countResult)['total'];
                             </tbody>
                         </table>
                     </div>
+
+
+
                 </div>
             </div>
         </main>

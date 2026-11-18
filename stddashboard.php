@@ -10,8 +10,8 @@ $studentId = $_SESSION['student_id'];
 $sql = "SELECT * FROM user WHERE id = ?";
 $stmt = mysqli_prepare($conn, $sql);
 
-$id = 12 ;
-mysqli_stmt_bind_param($stmt, "i", $id);
+$id = 8;
+mysqli_stmt_bind_param($stmt, "i", $studentId);
 mysqli_stmt_execute($stmt);
 
 $result = mysqli_stmt_get_result($stmt);
@@ -202,19 +202,35 @@ $enrollmentResult = mysqli_stmt_get_result($stmt);
 
                 <!-- ---------------------------------------------------------------------------------------------------------------------------- -->
                 // enrollement display
-                <section id="enrollments" class="card border-0 shadow-sm rounded-4 p-4">
+                                <section id="enrollments" class="card border-0 shadow-sm rounded-4">
 
-    <h2>Course Details</h2>
+    <div class="card-body p-4">
+        <h2 class="h5 mb-3">My Courses</h2>
+             <p class="text-secondary">
+                    <?php $total_course = mysqli_num_rows($enrollmentResult) ?>
+              Total Courses: <?= $total_course ?>
+             </p>
 
-    <?php while ($course = mysqli_fetch_assoc($enrollmentResult)) { ?>
+        <?php if ($total_course > 0) : ?>
+            <div class="row g-3">
+                <?php while ($course = mysqli_fetch_assoc($enrollmentResult)) { ?>
+                    <div class="col-md-6">
+                        <div class="border rounded-3 p-3 h-100">
 
-        <div class="border rounded p-3 mb-2">
-            <h5><?= htmlspecialchars($course['course_name']) ?></h5>
-        </div>
+                            <h5><?= htmlspecialchars($course['course_name']) ?></h5>
+                            
+                            <span class="badge bg-primary"> <?= htmlspecialchars($course['course_code']) ?> </span>
+                            <p class="mt-2">  <?= htmlspecialchars($course['description'] ?? '') ?> </p>
+                            <p> Duration: <?= htmlspecialchars($course['duration'] ?? '') ?> </p>
 
-    <?php } ?>
-
-</section>
+                            <p>  Fees: <?= htmlspecialchars($course['fees'] ?? '') ?> </p>
+                        </div>
+                    </div>
+                <?php } ?>
+            </div>
+        <?php endif; ?>
+    </div>
+  </section>
             </main>
         </div>
     </div>

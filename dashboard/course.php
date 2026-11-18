@@ -129,7 +129,7 @@ $totalCourses = mysqli_num_rows($result);
 
                             <div class="col-md-6">
                                 <label class="form-label">Course Fess</label>
-                                <input type="number" name="course_fees" class="form-control" required>
+                                <input type="text" name="course_fees" class="form-control" required>
                             </div>
 
                             <div class="col-md-3">

@@ -39,6 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $error = 'Please try again.';
         }
     }
+    echo $error ;
 }
 ?>
 <!DOCTYPE html>

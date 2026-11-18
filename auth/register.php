@@ -28,11 +28,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
      else {
         // $hashPassword = password_hash($password, PASSWORD_DEFAULT);
         $hashPassword = $password;
-        $phone = $form['phone'] !== '' ? $form['phone'] : null;
-        $gender = $form['gender'] !== '' ? $form['gender'] : null;
-        $dob = $form['dob'] !== '' ? $form['dob'] : null;
-        $address = $form['address'] !== '' ? $form['address'] : null;
-        $studentRoleId = 2;
+        $phone = $form['phone'] ;
+        $gender = $form['gender'];
+        $dob = $form['dob'];
+        $address = $form['address'] !== "" ? $form['address'] : "Unknown!!" ;
+        $role_id = 2;
 
         $sql = "INSERT INTO user
                 (first_name, last_name, email, password, phone, gender, dob, address, role_id)
@@ -42,24 +42,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($stmt) {
             mysqli_stmt_bind_param($stmt, 'ssssssssi', $form['first_name'], $form['last_name'], $form['email'], 
                                   $hashPassword, 
-                                  $phone, $gender, $dob, $address, $studentRoleId
+                                  $phone, $gender, $dob, $address, $role_id
                                   );
             if (mysqli_stmt_execute($stmt)) {
                 header('Location: ../dashboard/student.php?created=1');
                 exit;
             }
-
+            
             // $error = mysqli_stmt_errno($stmt) == 1062 ? "Email already register" : "Registeration failed";
             if (mysqli_stmt_errno($stmt) == 1062) { 
                  $error = "Email already registered."; // 1062 mySQL duplicate record error. 
               }
+
             else {
                 $error = "Registration failed.";
                 } 
              mysqli_stmt_close($stmt); 
         } 
         else {
-            $error = 'Could not prepare the registration. Please try again.';
+            $error = 'Please try again.';
         }
     }
      }
