@@ -1,7 +1,30 @@
 
 seperate  student dashboard....................
 <?php
-require __DIR__ . '/../connection/db.php';
+require __DIR__ . '/connection/db.php';
+
+$student_id = $_SESSION["student_id"];
+
+$sql = "SELECT * FROM user WHERE id = ?";
+$stmt = mysqli_prepare($conn,$sql);
+
+mysqli_stmt_bind_param($stmt, "s", $student_id);
+
+mysqli_stmt_execute($stmt);
+$student = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+
+if(isset($_POST["updateProfile"])){
+    $first_name = trim($_POST['first_name']??"");
+    $last_name = trim($_POST['last_name']??"");
+    $email = trim ($_POST['email']??"");
+    $phone = trim($_POST['phone']??"");
+    $gender =trim($_POST["gender"]??'');
+    $dob = trim($_POST['dob'])??"";
+    $address = trim($_POST["address"]??"");
+
+}
+
+
 
 
 ?>
