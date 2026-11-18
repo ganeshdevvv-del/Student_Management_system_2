@@ -1,33 +1,64 @@
 
-seperate  student dashboard....................
+
 <?php
+
+session_start();
 require __DIR__ . '/connection/db.php';
 
-$student_id = $_SESSION["student_id"];
+$studentId = $_SESSION['student_id'];
 
 $sql = "SELECT * FROM user WHERE id = ?";
-$stmt = mysqli_prepare($conn,$sql);
+$stmt = mysqli_prepare($conn, $sql);
 
-mysqli_stmt_bind_param($stmt, "s", $student_id);
-
+$id = 12 ;
+mysqli_stmt_bind_param($stmt, "i", $id);
 mysqli_stmt_execute($stmt);
-$student = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
 
-if(isset($_POST["updateProfile"])){
-    $first_name = trim($_POST['first_name']??"");
-    $last_name = trim($_POST['last_name']??"");
-    $email = trim ($_POST['email']??"");
-    $phone = trim($_POST['phone']??"");
-    $gender =trim($_POST["gender"]??'');
-    $dob = trim($_POST['dob'])??"";
-    $address = trim($_POST["address"]??"");
+$result = mysqli_stmt_get_result($stmt);
+$student = mysqli_fetch_assoc($result);
 
+$error = '';
+
+if (isset($_POST['update_profile'])) {
+
+    $firstName = $_POST['first_name'];
+    $lastName = $_POST['last_name'];
+    $email = $_POST['email'];
+    $phone = $_POST['phone'];
+    $gender = $_POST['gender'];
+    $dob = $_POST['dob'];
+    $address = $_POST['address'];
+
+    $sql = "UPDATE user SET first_name=?, last_name=?, email=?, phone=?, gender=?, dob=?, address=? WHERE id=?";
+
+    $stmt = mysqli_prepare($conn, $sql);
+
+    mysqli_stmt_bind_param($stmt, "sssssssi",
+        $firstName, $lastName, $email, $phone,
+        $gender, $dob, $address, $studentId
+    );
+
+    if (mysqli_stmt_execute($stmt)) {
+        header("Location: stddashboard.php?updated=1");
+        exit;
+    } else {
+        $error = "Profile not updated";
+    }
 }
 
+// Fetch enrolled courses details
+$sql = "SELECT course.* FROM enrollment
+        JOIN course ON enrollment.course_id = course.id
+        WHERE enrollment.user_id = ?";
 
+$stmt = mysqli_prepare($conn, $sql);
+mysqli_stmt_bind_param($stmt, "i", $studentId);
+mysqli_stmt_execute($stmt);
 
+$enrollmentResult = mysqli_stmt_get_result($stmt);
 
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -37,8 +68,8 @@ if(isset($_POST["updateProfile"])){
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Student Dashboard</title>
 
-
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <style>
         body {
             background: #f5f6f8;
@@ -67,7 +98,7 @@ if(isset($_POST["updateProfile"])){
     <div class="container-fluid">
         <div class="row">
 
-            <!-- Sidebar-->
+            <!-- Sidebar -->
             <aside class="col-md-3 col-lg-2 sidebar p-3">
                 <h4 class="mb-4">Student Portal</h4>
                 <nav class="nav flex-column gap-2">
@@ -78,18 +109,31 @@ if(isset($_POST["updateProfile"])){
                 <header class="mb-4">
                     <p class="text-secondary mb-1">Student Account</p>
                     <h1 class="h3">
-                        Welcome, NAME..........
+                        Welcome, <?= htmlspecialchars($student['first_name']) ?>
                     </h1>
                 </header>
                 <!-- Banner -->
                 <section class="banner text-white rounded-4 p-4 mb-4">
-                    <p>Student Number:   </p>
+                    <p>Student Number: <?= htmlspecialchars($student['reg_num']) ?></p>
                     <h2 class="h4">Wellcome</h2>
                     <p>Review your personal details and courses enrolled.</p>
                 </section>
 
-<!-- ------------------------------------------------------------------------------------------------------ -->
-                <!-- Profile section -->
+                <?php if (isset($_GET['updated'])) { ?>
+                    <div class="alert alert-success">
+                        Profile updated successfully.
+                    </div>
+                <?php } ?>
+
+                <?php if ($error != '') { ?>
+
+                    <div class="alert alert-danger">
+                        <?= htmlspecialchars($error) ?>
+                    </div>
+
+                <?php } ?>
+
+                <!-- profile section---------------------------------------------------------------------------->
                 <section id="profile" class="card border-0 shadow-sm rounded-4 mb-4">
                     <div class="card-body p-4">
                         <h2 class="h5 mb-3">Personal Details</h2>
@@ -98,55 +142,56 @@ if(isset($_POST["updateProfile"])){
                                 <div class="col-md-6">
                                     <label class="form-label">Student Number</label>
                                     <input class="form-control"
-                                        value="<?="" ?>" readonly>
-                         </div>
+                                        value="<?= htmlspecialchars($student['reg_num']) ?>" readonly>
+                                </div>
+
                                 <div class="col-md-6">
                                     <label class="form-label">Email</label>
                                     <input type="email" name="email" class="form-control"
-                                        value="<?= ""?>" required>
+                                        value="<?= htmlspecialchars($student['email']) ?>" required>
                                 </div>
 
                                 <div class="col-md-6">
                                     <label class="form-label">First Name</label>
                                     <input type="text" name="first_name" class="form-control"
-                                        value="<?= ""?>" required>
+                                        value="<?= htmlspecialchars($student['first_name']) ?>" required>
                                 </div>
 
                                 <div class="col-md-6">
                                     <label class="form-label">Last Name</label>
                                     <input type="text" name="last_name" class="form-control"
-                                        value="<?= "" ?>" required>
+                                        value="<?= htmlspecialchars($student['last_name']) ?>" required>
                                 </div>
 
                                 <div class="col-md-6">
                                     <label class="form-label">Phone</label>
                                     <input type="text" name="phone" class="form-control"
-                                        value="<?= ""?>">
+                                        value="<?= htmlspecialchars($student['phone']) ?>">
                                 </div>
 
                                 <div class="col-md-6">
                                     <label class="form-label">Gender</label>
 
-                                    <select name="gender" class="form-select">
-                                        <option value="Male">Male</option>
-                                        <option value="Female">Female</option>
-                                        <option value="Other">Other</option>
+                                 <select name="gender" class="form-select">
+                                        <option value="Male" <?= $student['gender'] == 'Male' ? 'selected' : '' ?>>Male</option>
+                                        <option value="Female" <?= $student['gender'] == 'Female' ? 'selected' : '' ?>>Female</option>
+                                        <option value="Other" <?= $student['gender'] == 'Other' ? 'selected' : '' ?>>Other</option>
                                     </select>
                                 </div>
 
                                 <div class="col-md-6">
                                     <label class="form-label">Date of Birth</label>
                                     <input type="date" name="dob" class="form-control"
-                                        value="<?= ""?>">
+                                        value="<?= htmlspecialchars($student['dob'] ?? '') ?>">
                                 </div>
 
                                 <div class="col-12">
                                     <label class="form-label">Address</label>
                                     <textarea name="address" rows="3"
-                                        class="form-control"></textarea>
+                                        class="form-control"><?= htmlspecialchars($student['address'] ?? '') ?></textarea>
                                 </div>
-                         </div>
 
+                            </div>
                             <button type="submit" name="update_profile"
                                 class="btn btn-primary mt-4">
                                 Save Profile
@@ -154,16 +199,25 @@ if(isset($_POST["updateProfile"])){
                         </form>
                     </div>
                 </section>
-<!-- -------------------------------------------------------------------------------------- -->
-                <section>
 
-                    //display enrollement details
-                    
-                </section>
+                <!-- ---------------------------------------------------------------------------------------------------------------------------- -->
+                // enrollement display
+                <section id="enrollments" class="card border-0 shadow-sm rounded-4 p-4">
 
+    <h2>Course Details</h2>
+
+    <?php while ($course = mysqli_fetch_assoc($enrollmentResult)) { ?>
+
+        <div class="border rounded p-3 mb-2">
+            <h5><?= htmlspecialchars($course['course_name']) ?></h5>
+        </div>
+
+    <?php } ?>
+
+</section>
             </main>
         </div>
     </div>
 </body>
 </html>
-         
+
