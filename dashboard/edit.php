@@ -84,6 +84,11 @@ if ($type === 'course') {
         }
         
         elseif (isset($_POST['save'])) {
+            $selectedCourseIds = $_POST['course_ids'] ?? [];
+            if (!is_array($selectedCourseIds)) {
+                $selectedCourseIds = [];
+            }
+            $selectedCourseIds = array_values(array_unique(array_filter(array_map('intval', $selectedCourseIds))));
             $firstName = trim($_POST['first_name'] ?? '');
             $lastName = trim($_POST['last_name'] ?? '');
             $email = trim($_POST['email'] ?? '');
@@ -106,11 +111,27 @@ if ($type === 'course') {
                 WHERE id = ? AND role_id = 2';
                 $update = mysqli_prepare($conn, $sql);
                 mysqli_stmt_bind_param($update, 'sssssssi', $firstName, $lastName, $email, $phone, $gender, $dob, $address, $studentId);
-                if (mysqli_stmt_execute($update) && mysqli_stmt_affected_rows($update) >= 0) {
+                mysqli_begin_transaction($conn);
+                try {
+                    mysqli_stmt_execute($update);
+
+                    $deleteEnrollments = mysqli_prepare($conn, 'DELETE FROM enrollment WHERE user_id = ?');
+                    mysqli_stmt_bind_param($deleteEnrollments, 'i', $studentId);
+                    mysqli_stmt_execute($deleteEnrollments);
+
+                    $addEnrollment = mysqli_prepare($conn, 'INSERT INTO enrollment (user_id, course_id, price) SELECT ?, id, fees FROM course WHERE id = ?');
+                    mysqli_stmt_bind_param($addEnrollment, 'ii', $studentId, $courseId);
+                    foreach ($selectedCourseIds as $courseId) {
+                        mysqli_stmt_execute($addEnrollment);
+                    }
+
+                    mysqli_commit($conn);
                     header('Location: student.php?updated=1');
                     exit;
+                } catch (Throwable $exception) {
+                    mysqli_rollback($conn);
+                    $message = 'Student and course changes could not be saved.';
                 }
-                $message = 'Student Not update';
             }
         }
     }
@@ -122,6 +143,18 @@ if ($type === 'course') {
     if (!$student) {
         header('Location: student.php?error=1');
         exit;
+    }
+
+    $courses = mysqli_query($conn, 'SELECT id, course_code, course_name, fees FROM course ORDER BY course_name');
+    if (!isset($selectedCourseIds)) {
+        $selectedCourseIds = [];
+        $enrolled = mysqli_prepare($conn, 'SELECT course_id FROM enrollment WHERE user_id = ?');
+        mysqli_stmt_bind_param($enrolled, 'i', $studentId);
+        mysqli_stmt_execute($enrolled);
+        $enrolledResult = mysqli_stmt_get_result($enrolled);
+        while ($enrollment = mysqli_fetch_assoc($enrolledResult)) {
+            $selectedCourseIds[] = (int)$enrollment['course_id'];
+        }
     }
 }
 //------------------------------------------------------------------------------------------------------------------
@@ -207,6 +240,23 @@ function fieldValue($record, $key) {
                 <div class="col-12">
                     <label for="address" class="form-label">Address</label>
                     <textarea id="address" name="address" class="form-control" rows="3"><?= fieldValue($student, 'address') ?></textarea>
+                </div>
+                <div class="col-12">
+                    <label class="form-label">Course Selection</label>
+                    <?php if (mysqli_num_rows($courses) === 0): ?>
+                        <p class="text-secondary">No courses are available.</p>
+                    <?php else: ?>
+                        <?php while ($courseOption = mysqli_fetch_assoc($courses)): ?>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="course_ids[]"
+                                    id="course_<?= (int)$courseOption['id'] ?>" value="<?= (int)$courseOption['id'] ?>"
+                                    <?= in_array((int)$courseOption['id'], $selectedCourseIds, true) ? 'checked' : '' ?>>
+                                <label class="form-check-label" for="course_<?= (int)$courseOption['id'] ?>">
+                                    <?= htmlspecialchars($courseOption['course_name'] . ' (' . $courseOption['course_code'] . ')', ENT_QUOTES, 'UTF-8') ?>
+                                </label>
+                            </div>
+                        <?php endwhile; ?>
+                    <?php endif; ?>
                 </div>
             </div>
             <div class="d-flex justify-content-between mt-4"> 

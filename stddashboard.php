@@ -138,6 +138,7 @@ $enrollmentResult = mysqli_stmt_get_result($stmt);
                     <div class="card-body p-4">
                         <h2 class="h5 mb-3">Personal Details</h2>
                         <form method="POST">
+
                             <div class="row g-3">
                                 <div class="col-md-6">
                                     <label class="form-label">Student Number</label>
