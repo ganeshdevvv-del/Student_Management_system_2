@@ -33,59 +33,17 @@ $sql = "SELECT COUNT(*) AS total FROM user WHERE role_id = 2";
 $countResult = mysqli_query($conn, $sql);
 $studentCount = mysqli_fetch_assoc($countResult)['total'];
 ?>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Directory</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body { background: #f5f6f8; }
-        .sidebar { min-height: 100vh; background: white; }
-        .sidebar a { color: #626875; text-decoration: none; }
-        .sidebar a:hover, .sidebar a.active {
-            background: #fff1e6;
-            color: #d58b53;
-        }
-        .directory-banner {
-            background: linear-gradient(110deg, #d6a168, #5c9c7c);
-        }
-    </style>
-</head>
-<body>
-<div class="container-fluid">
-    <div class="row">
-        <aside class="col-md-2 sidebar p-3">
-            <h4 class="mb-4">🎓 Student</h4>
-            <nav class="nav flex-column gap-2">
-                <a class=" rounded p-2" href="admin.php">▦  Admin Dashboard</a>
-                <a class="rounded p-2 active" href="student.php">Student Details</a>
-                <a href="course.php" class="rounded p-2 " >▤ Courses </a>
-                <a class="rounded p-2" href="enrollment.php">☑ Enrollments</a>
-                <!-- <a class="rounded p-2" href="#">⚙ Settings</a> -->
-                <a class="rounded p-2 mt-auto text-danger" href="/auth/logout.php">⏻ Logout</a>
-            </nav>
-        </aside>
-
-        <main class="col-md-10 p-4">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <div>
-                    <p class="text-secondary mb-1">Administration</p>
-                    <h3>Student Directory</h3>
-                </div>
-                <a href="../auth/register.php" class="btn btn-primary btn-sm rounded-pill px-3">
-                    + Add Student
-                </a>
-            </div>
-
-            <div class="directory-banner text-white rounded-4 p-4 mb-4">
-                <h4>Manage your student community</h4>
-                <p class="mb-0">View all registered students.</p>
-            </div>
-
-            <?php if (isset($_GET['updated'])): ?>
+<?php
+$pageTitle = 'Student Directory';
+$pageHeading = 'Student Directory';
+$pageSubtitle = 'Administration';
+$activePage = 'students';
+$bannerTitle = 'Manage your student community';
+$bannerText = 'View all registered students.';
+$headerAction = ['href' => '../auth/register.php', 'label' => '+ Add Student'];
+require __DIR__ . '/headder.php';
+?>
+<?php if (isset($_GET['updated'])): ?>
                 <div class="alert alert-success">Student updated successfully!</div>
             <?php endif; ?>
 

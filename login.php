@@ -7,6 +7,11 @@ $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
+    $appBase = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? ''), '/');
+    if ($appBase === '.') {
+        $appBase = '';
+    }
+
     $email = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
 
@@ -32,12 +37,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['user_role'] = $role;
 
             if ($role === 'admin') {
-                header("Location: ../dashboard/admin.php");
+                header('Location: ' . $appBase . '/dashboard/admin.php');
                 exit;
             } 
             elseif ($role === 'student') {
                 $_SESSION['student_id'] = (int)$user['id'];
-                header("Location: ../stddashboard.php");
+                header('Location: ' . $appBase . '/dashboard/stddashboard.php');
                 exit;
             } 
             else {
@@ -61,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <link rel="stylesheet" href="/auth/style.css">
+    <link rel="stylesheet" href="auth/style.css">
 </head>
 
 <body>

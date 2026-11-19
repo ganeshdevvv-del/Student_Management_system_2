@@ -73,55 +73,18 @@ while ($row = mysqli_fetch_assoc($result)) {
     }
 }
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Enrollment</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body { background: #f5f6f8; }
-        .sidebar { min-height: 100vh; background: white; }
-        .sidebar a { color: #626875; text-decoration: none; }
-        .sidebar a:hover, .sidebar a.active {
-            background: #fff1e6;
-            color: #d58b53;
-        }
-        .directory-banner {
-            background: linear-gradient(110deg, #d6a168, #5c9c7c);
-        }
-    </style>
-</head>
-<body>
-<div class="container-fluid">
-    <div class="row">
 
-        <!-- Sidebar -->
-        <aside class="col-md-2 sidebar p-3">
-            <h4 class="mb-4">🎓 Student</h4>
-            <nav class="nav flex-column gap-2">
-                <a class=" rounded p-2" href="admin.php">▦  Admin Dashboard</a>
-                <a class="rounded p-2" href="student.php">♙ Student profile</a>
-                <a href="course.php" class="rounded p-2" >▤ Courses </a>
-                <a class="rounded p-2 active" href="enrollment.php">Enroll-Students</a>
-                <!-- <a class="rounded p-2" href="#">⚙ Settings</a> -->
-                <a class="rounded p-2 mt-auto text-danger" href="/auth/logout.php">⏻ Logout</a>
-            </nav>
-        </aside>
+<?php
+$pageTitle = 'Student Enrollment';
+$pageHeading = 'Student Enrollment';
+$pageSubtitle = 'Administration';
+$activePage = 'enrollments';
+$bannerTitle = 'Manage Enrollments';
+$bannerText = 'Enroll students in available courses.';
+require __DIR__ . '/headder.php';
+?>
 
-        <!-- Main Content -->
-        <main class="col-md-10 p-4">
-            <p class="text-secondary mb-1">Administration</p>
-            <h3 class="mb-4">Student Enrollment</h3>
-
-            <!-- Banner -->
-            <div class="directory-banner text-white rounded-4 p-4 mb-4">
-                <h4>Manage Enrollments</h4>
-                <p class="mb-0">Enroll students in available courses.</p>
-            </div>
-
-            <?php if (isset($_GET['saved'])): ?>
+<?php if (isset($_GET['saved'])): ?>
                 <div class="alert alert-success">Enrollment saved successfully!</div>
             <?php endif; ?>
 

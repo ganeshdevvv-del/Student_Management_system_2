@@ -2,10 +2,10 @@
 
 <?php
 
-require __DIR__ . '/auth/check_login.php';
+require __DIR__ . '/../auth/check_login.php';
 needLogin('student');
 
-require __DIR__ . '/connection/db.php';
+require __DIR__ . '/../connection/db.php';
 
 $studentId = $_SESSION['student_id'];
 
@@ -60,69 +60,21 @@ mysqli_stmt_execute($stmt);
 $enrollmentResult = mysqli_stmt_get_result($stmt);
 
 ?>
+<?php
+$pageTitle = 'Student Dashboard';
+$pageHeading = 'Welcome, ' . ($student['first_name'] ?? 'Student');
+$pageSubtitle = 'Student Account';
+$activePage = 'profile';
+$studentPortal = true;
+$bannerLead = 'Student Number: ' . ($student['reg_num'] ?? '');
+$bannerTitle = 'Welcome';
+$bannerText = 'Review your personal details and courses enrolled.';
 
 
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Student Dashboard</title>
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <style>
-        body {
-            background: #f5f6f8;
-            color: #252a34;
-        }
-        .sidebar {
-            min-height: 100vh;
-            background: white;
-        }
-        .sidebar a {
-            color: #626875;
-            text-decoration: none;
-        }
-        .sidebar a:hover {
-            background: #fff1e6;
-            color: #d58b53;
-        }
-        .banner {
-            background: linear-gradient(110deg, #d6a168, #5c9c7c);
-        }
-    </style>
-</head>
-
-<body>
-
-    <div class="container-fluid">
-        <div class="row">
-
-            <!-- Sidebar -->
-            <aside class="col-md-3 col-lg-2 sidebar p-3">
-                <h4 class="mb-4">Student Portal</h4>
-                <nav class="nav flex-column gap-2">
-                    <a class="rounded p-2 active" href="#profile">My Profile</a>
-                    <a class="rounded p-2 mt-auto text-danger" href="/auth/logout.php">⏻ Logout</a>
-                </nav>
-            </aside>
-            <main class="col-md-9 col-lg-10 p-3 p-lg-4">
-                <header class="mb-4">
-                    <p class="text-secondary mb-1">Student Account</p>
-                    <h1 class="h3">
-                        Welcome, <?= htmlspecialchars($student['first_name']) ?>
-                    </h1>
-                </header>
-                <!-- Banner -->
-                <section class="banner text-white rounded-4 p-4 mb-4">
-                    <p>Student Number: <?= htmlspecialchars($student['reg_num']) ?></p>
-                    <h2 class="h4">Wellcome</h2>
-                    <p>Review your personal details and courses enrolled.</p>
-                </section>
-
-                <?php if (isset($_GET['updated'])) { ?>
+require __DIR__ . '/headder.php';
+?>
+<?php if (isset($_GET['updated'])) { ?>
                     <div class="alert alert-success">
                         Profile updated successfully.
                     </div>
@@ -205,7 +157,7 @@ $enrollmentResult = mysqli_stmt_get_result($stmt);
                 </section>
 
                 <!-- ---------------------------------------------------------------------------------------------------------------------------- -->
-                // enrollement display
+                <!-- Enrolled courses -->
                                 <section id="enrollments" class="card border-0 shadow-sm rounded-4">
 
     <div class="card-body p-4">
@@ -235,9 +187,11 @@ $enrollmentResult = mysqli_stmt_get_result($stmt);
         <?php endif; ?>
     </div>
   </section>
-            </main>
-        </div>
+
+
+
+        </main>
     </div>
+</div>
 </body>
 </html>
-

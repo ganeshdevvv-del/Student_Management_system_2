@@ -38,67 +38,17 @@ $sql = "";
 $result = mysqli_query($conn, "SELECT * FROM course ORDER BY id");
 $totalCourses = mysqli_num_rows($result);
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Course Management</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background: #f5f6f8;
-        }
-        .sidebar {
-            min-height: 100vh;
-            background: white;
-        }
-        .sidebar a {
-            color: #626875;
-            text-decoration: none;
-        }
-        .sidebar a:hover,
-        .sidebar a.active {
-            background: #fff1e6;
-            color: #d58b53;
-        }
-        .directory-banner {
-            background: linear-gradient(110deg, #d6a168, #5c9c7c);
-        }
-    </style>
-    
-</head>
+<?php
+$pageTitle = 'Course Management';
+$pageHeading = 'Course Management';
+$pageSubtitle = 'Administration';
+$activePage = 'courses';
+$bannerTitle = 'Manage your courses';
+$bannerText = 'View and manage all available courses.';
 
-<body>
-<div class="container-fluid">
-    <div class="row">
-        <!-- Sidebar -->
-        <aside class="col-md-2 sidebar p-3">
-            <h4 class="mb-4">🎓 Student</h4>
-
-            <nav class="nav flex-column gap-2">
-                <a class=" rounded p-2" href="admin.php">▦  Admin Dashboard</a>
-                <a class="rounded p-2" href="student.php">♙ Student profile</a>
-                <a href="course.php" class="rounded p-2 active" >Courses Directory</a>
-                <a class="rounded p-2" href="enrollment.php">☑ Enrollments</a>
-                <!-- <a class="rounded p-2" href="#">⚙ Settings</a> -->
-                <a class="rounded p-2 mt-auto text-danger" href="/auth/logout.php">⏻ Logout</a>
-            </nav>
-        </aside>
-
-        <!-- Main Content -->
-        <main class="col-md-10 p-4">
-            <div class="mb-4">
-                <p class="text-secondary mb-1">Administration</p>
-                <h3>Course Management</h3>
-            </div>
-            <!-- Banner -->
-            <div class="directory-banner text-white rounded-4 p-4 mb-4">
-                <h4>Manage your courses</h4>
-                <p class="mb-0">View and manage all available courses.</p>
-            </div>
-
-            <?php if (isset($_GET['saved'])): ?>
+require __DIR__ . '/headder.php';
+?>
+<?php if (isset($_GET['saved'])): ?>
                 <div class="alert alert-success">Course added successfully!</div>
             <?php endif; ?>
             <?php if (isset($_GET['updated'])): ?>
@@ -196,6 +146,5 @@ $totalCourses = mysqli_num_rows($result);
         </main>
     </div>
 </div>
-
 </body>
 </html>
